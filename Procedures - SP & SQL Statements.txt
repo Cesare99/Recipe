@@ -1,0 +1,236 @@
+-----New Procedure-----
+
+PROCEDURE `rb_add_new_recipe`(IN `p_title` VARCHAR(20), IN `p_description` VARCHAR(40), IN `p_image` VARCHAR(120), IN `p_category_id` INT, IN `p_sub_category_id` INT, IN `p_preparation_time` INT, IN `p_cooking_time` INT, IN `p_temperature` INT, IN `p_degrees` CHAR(1))
+ 
+INSERT INTO recipe(title, description, image, category_id, sub_category_id, preparation_time, cooking_time, temperature, degrees)
+VALUES(p_title, p_description, p_image, p_category_id, p_sub_category_id, p_preparation_time, p_cooking_time, p_temperature, p_degrees) 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_add_recipe_comment`(IN `p_recipe_id` INT, IN `p_account_id` INT, IN `p_comment` VARCHAR(255))
+ 
+INSERT INTO comment(recipe_id, account_id, comment)
+VALUES(p_recipe_id, p_account_id, p_comment) 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_add_to_favourites`(IN `p_account_id` INT, IN `p_recipe_id` INT)
+ 
+INSERT INTO favourite(account_id, recipe_id)
+VALUES(p_account_id, p_recipe_id) 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_delete_member`(IN `p_id` INT)
+ 
+DELETE 
+FROM account
+WHERE account_id = p_id 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_delete_pending`(IN `p_account_id` INT, IN `p_friend_id` INT)
+ 
+DELETE FROM friendpending
+WHERE account_id = p_account_id
+AND friend_id = p_friend_id 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_friend_request`(IN `p_account_id` INT, IN `p_friend_id` INT, IN `p_message` VARCHAR(255))
+ 
+INSERT INTO friendpending(account_id, friend_id, requestDate, message)
+VALUES (p_account_id, p_friend_id, now(), p_message) 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_get_favourites`(IN `p_account_id` INT)
+ 
+SELECT title, image
+FROM recipe
+WHERE recipe_id IN (SELECT recipe_id
+					FROM favourite
+					WHERE account_id = p_account_id) 
+			
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_get_member`(IN `p_email` VARCHAR(120))
+ 
+SELECT account_id, fname, lname, email, password, dob, joinDate, picture
+FROM account
+WHERE email = p_email;
+					
+					
+-----New Procedure-----
+
+
+PROCEDURE `rb_get_recipe_comments`(IN `p_recipe_id` INT)
+ 
+select * 
+from comment c
+inner join account a on (c.account_id = a.account_id)
+WHERE c.recipe_id = p_recipe_id 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_insert_new_member`(IN `p_fname` VARCHAR(45), IN `p_lname` VARCHAR(45), IN `p_email` VARCHAR(65), IN `p_password` VARCHAR(12), IN `p_dob` DATE, IN `p_picture` VARCHAR(200))
+ 
+INSERT INTO account
+(fname, lname, email, password, dob, joinDate, picture)
+VALUES(p_fname, p_lname, p_email, p_password, p_dob, now(), p_picture) 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_insert_recipe_ingredient`(IN `p_recipe_id` INT, IN `p_item_id` INT, IN `p_qty` INT, IN `p_unit_id` INT)
+ 
+INSERT INTO ingredient(recipe_id, item_id, qty, unit_id)
+VALUES (p_recipe_id, p_item_id, p_qty, p_unit_id) 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_insert_recipe_item`(IN `p_item` VARCHAR(40))
+ 
+INSERT INTO item(item)
+VALUES (p_item) 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_insert_recipe_method`(IN `p_recipe_id` INT, IN `p_method` VARCHAR(100))
+ 
+INSERT INTO method(recipe_id, method)
+VALUES (p_recipe_id, p_method) 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_login_member`(IN `p_email` VARCHAR(120), IN `p_password` VARCHAR(12))
+ 
+SELECT email, password
+FROM account
+WHERE email = p_email
+AND password = p_password 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_search_recipe`(IN `p_search_text` VARCHAR(100))
+ 
+SELECT *
+FROM recipe
+WHERE title OR description LIKE concat('%', p_search_text, '%') 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_select_categories`()
+ 
+SELECT *
+FROM category
+ORDER BY name 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_select_item`(IN `p_item_id` INT)
+ 
+SELECT item_id, item
+FROM item
+WHERE item_id = p_item_id 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_select_recipe`(IN `p_recipe_id` INT)
+ 
+select *
+from recipe
+where recipe_id = p_recipe_id 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_select_recipes`()
+ 
+select *
+from recipe 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_select_sub_categories`()
+ 
+SELECT *
+FROM subcategory
+ORDER BY name 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_select_units`()
+ 
+SELECT unit_id, name, description
+FROM unit 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_update_member`(IN `p_account_id` INT, IN `p_fname` VARCHAR(45), IN `p_lname` VARCHAR(45), IN `p_email` VARCHAR(65), IN `p_password` VARCHAR(25), IN `p_dob` DATE, IN `p_picture` VARCHAR(100))
+ 
+UPDATE account
+SET fname = p_fname,
+lname = p_lname,
+email = p_email,
+password = p_password,
+dob = p_dob,
+picture = p_picture
+WHERE account_id = p_account_id 
+
+
+-----New Procedure-----
+
+
+PROCEDURE `rb_update_recipe`(IN `p_recipe_id` INT, IN `p_title` VARCHAR(200), IN `p_description` VARCHAR(200), IN `p_image` VARCHAR(200), IN `p_category_id` INT, IN `p_sub_category_id` INT, IN `p_preparation_time` INT, IN `p_cooking_time` INT, IN `p_temperature` INT, IN `p_degrees` VARCHAR(5))
+ 
+UPDATE recipe
+SET title = p_title,
+description = p_description,
+image = p_image,
+category_id = p_category_id,
+sub_category_id = p_sub_category_id,
+preparation_time = p_preparation_time,
+cooking_time = p_cooking_time,
+temperature = p_temperature,
+degrees = p_degrees
+WHERE recipe_id = p_recipe_id 
